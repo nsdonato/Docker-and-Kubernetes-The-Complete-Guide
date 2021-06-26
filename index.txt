@@ -1,1 +1,139 @@
 
+# Section 1: Dive Into Docker!
+    
+    1. Finished Code and Diagrams
+
+        Finished Code and Diagrams
+            Finished Code
+
+            Finished code is attached to each applicable lecture throughout the course. If you get stuck at any point you can download the code and compare it against yours with a diff tool like Diffchecker or VSCode's built-in comparison tool.
+
+        Diagrams
+
+            The diagrams shown in the course are attached to this lecture note as a zip file.
+
+            Download the file and extract it somewhere on your computer.
+
+            Visit diagrams.net (formerly draw.io).
+
+            Select Open Existing Diagram and use the file explorer to select the diagram file from your computer.
+
+            or
+
+            Click on File from the diagrams.net menu.
+
+            Select Open From Device and use the file explorer to select the diagram file from your computer.
+
+            Note - Please understand, if a diagram or group of diagrams is missing, this means that we no longer have them to share. You'll need to use a good screenshot tool to make a copy from the video lecture.
+
+        Resources for this lecture
+            diagrams.zip
+
+    2. Join Our Community!
+        nop
+
+    3. Why Use Docker?
+        -.Porque podes instalar y correr software en cualquier compu sin preocuparte por el setup o las dependencias.-
+
+        Porque cada vez que tenes que instalar algo siempre te encontras con un problema y tenes que andar buscando que es porque y como solucionarlo.
+
+        Empieza a explicar el porqué usar docker, por ejemplo trata de instalar Redis (sirve para almacenar data en memoria.) en su compu y le da un error, entonces tira 
+            docker run-it redis 
+        y funca en docker...
+
+    4. What is Docker?
+        Docker es una plataforma o ecosistema que crea y corre containers
+
+        Docker ecosystem:
+            Docker Cliente
+            Docker Server
+            Docker Machine
+            Docker Images
+            Docker Hub
+            Docker Compose
+
+        Cuando tiro el comando Docler run-it redis, lo que pasó fue:
+        Algo llamo al Docker CLI, llamo al Docker Hub, se bajo el archivo de la imagen, que contiene todas las dependencias y configuraciones para correr Redis, con la imagen corrió un container (es una instancia de una imagen que corre como un programa)
+
+        Container basicamente es un programa con sus propios recuros, memoria, netfworking, etc.
+
+    5. Docker for Mac/Windows
+        Vamos a instalar Docker para Windows:
+
+        Docker Cliente (CLI), herramientas que vamos a usar para tirar comandos y nos ayuda a interactuar con Docker Server "Docker Daemon")
+
+        Docker Server/Daemon:
+            Herramienta que es responsable por crear imagenes, correr containers, etc.
+
+    6. Installing Docker on MacOS
+        ...
+    7. Installing Docker for Windows Home users
+        ...
+    8. Installing Docker for Windows Profressional
+
+        Docker.com -> GetStarted > Download for Windows > Login with Docker account (vamos a necesitarlo para varias cosas, hacerlo) > Get Docker > no tildar windows containers > hasta que termine.
+
+        Logout and log back in
+    9. More Windows Professional Setup
+        
+        Tenes que reiniciar cuando queres abrir docker y te quiere habilitar hyper-v
+
+    10. One Last Piece of Windows Professional Setup
+
+        En la barra de herramientas aparece la ballena, hay que loguearse.
+
+        En una terminal tirar el comand: 
+        > Docker version 
+
+        para ver que se haya instalado bien.
+
+    11. Installing Docker on Linux
+        ...
+
+    12. Using the Docker Client
+        Tuve que deshabilitar el proxy del laburo de docker 
+
+        > docker run hello-world
+
+        esto corre un nuevo container, con la imagen hello-world, tiene un programa adentro, que imprime solamente eso que vemos en pantalla:
+        Hello from Docker! ...etc
+
+        Paso a paso:
+            docker run hello-world -> Mi compu -> Docker Cli => Docker Server:
+            1. se fija si en tu compu hay una imagen en cache de esa imagen
+            2. si no había en cache -> Docker Hub -> hello-world -> la guarda en la cache de tu compu.
+
+            Después de eso, la usa, crea una instancia de esa imagen (container) y lo corre.
+
+    13. But Really...What's a Container?
+        Para entender que es un container, necesitas tener un poco de brackground en como funciona tu sistema operativo:
+
+        tienen un kernel que corre un proceso de software que gobierna entre todos los programas que están corriendo y todo el hardware que esta conectado.
+
+        por ejemplo: node js, le dice al kernel que quiere que leer un archivo, a traves de una de las System Calls, son como endpoints que expone
+        kernel y llama al disco rigido y le devuelve lo que necesita.
+
+        Caso hipotetico:
+        chrome usa python v2 y node js python v3 y no podes tener instalado en tu pc las dos versiones salvo que:
+        
+        Podríamos crear un segmento en el disco rigido para cada version de python y en cada llamada de chrome o node js por las system calls, el kernel pregunta que proceso es (chrome.exe x ej) y lo deriva al segmento correspondiente.
+
+        Este proceso de segmentar se llama NAMESCPACING, aisla recuros para un proceso o grupo de procesos 
+        procesos, hard drive, network, users, hostnames, inter process communications...
+
+        CONTROL GROUPS, limita el monto de recursos usados por cada proceso:
+        memoria, cpu usage, hd i/o, network bandwith
+
+        Cada vez que hablamos de una IMAGEN hablamos de:
+        fyle system snapshot:
+             basicamente es como un copy paste de directorios, archivos especificos, o sea, podemos tener una imagen que tenga solo chrome y pyhon,el kernel va a aislar ram, network, cou y disco rigido donde va a poner los procesos de chrome y python.
+        
+        startup command:
+            por ej "run chrome" y chrome pasa a ser un proceso corriendo en el container.
+
+    14. How's Docker Running on Your Computer?
+        namespacing y control groups son especificos de linux, no de windows, no de mac. ¿como funciona entonces en esos sistemas oeprativos?
+
+        Cuando instalas docker, se instala linux virtual machine, dentro de esta maquina virtual, que tiene su kernel y hostea los procesos y accesos a los recursos de tu maquina.
+        
+         
