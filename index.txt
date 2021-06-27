@@ -456,7 +456,99 @@
 
         > docker run nuevo_container_id
 
+
+# Section 4: Making Real Projects with Docker
+
+    40. Project Outline
+
+        Vamos a crear una pequeña aplicación web con node js
+        Vamos a tener errores que generó a proposito 
+
+        Los pasos:
+        Crear una web app con node js
+        Crear un Dockerfile
+        Buildear una imagen con dockerfile
+        Correr la imagen como un container
+        Conectarnos desde un browser a la web app
+
+    41. Node Server Setup
         
+        crea el package.json e index, bien simple
+
+    42. A Few Planned Errors
+
+        hay que tener en cuenta que node antes de arrancar la app necesita instalar las dependencias con npm install
+
+        para arrancar la app npm start
+        
+        entonces, nuestro dockerfile, debería ser:
+
+        FROM alpine
+        RUN npm install
+        CMD ["npm", "start"]
+
+        hacemos docker build . y da error porque no tiene instalado npm
+
+    43. Required WORKDIR update - "Could not detect node name", "idealTree" errors
+        10-24-2020
+
+        The v15 version of Node has recently been released and is causing issues with some of our project code.
+
+        In the next lecture you may get the following error when building the Dockerfile:
+
+        npm ERR! could not detect node name from path or package
+
+        or
+
+        npm ERR! idealTree already exists
+
+        To resolve this, add a WORKDIR right after the FROM instruction: (we will be adding this very soon anyway)
+
+        FROM node:alpine
+        
+        WORKDIR /usr/app
+        Also, you will no longer get the error regarding the missing package.json as shown at around 7:16 in the video. With Node v15 / npm v7, if you run npm install in a directory without a package.json, an empty package.json is now created for you and will no longer throw this error. However, a properly written package.json listing your dependencies is still required to run a Node based application.
+
+    44. Base Image Issues
+
+        alpine no tiene node adentro, por ende podemos buscar una imagen de alpine con node o podemos instalarlo con RUN.
+        
+        node:alpine
+
+        si tuviera que tener una versión de node especifica:
+        node:1.2:alpine
+
+        nombreReposiorio:tag
+
+        alpine es compacto y chico, acotado en cuanto a las programas que tiene dentro.
+
+        al correr docker build . dice que no encuentra package.json
+
+    45. A Few Missing Files
+
+        explica con el diagrama porqué no están los archivos index y package.json
+
+    46. Copying Build Files
+
+        Vamos a copiar los archivos a la imagen
+
+        COPY ./ ./
+            El path de la carpeta desde donde vamos a copiar para buildear 
+            El path donde van a ir a parar los archivos en el container.
+            ./ significa el directorio actual
+
+
+        buildea la imagen, pero no puede entrar a localhost:8080, porque falta configurar algo.
+        
+    47. Container Port Mapping
+
+
+    48. Specifying a Working Directory
+
+    49. Unnecessary Rebuilds
+
+    50. Minimizing Cache Busting and Rebuilds
+
 #  Section 19: Extras
 
     333. Bonus!
