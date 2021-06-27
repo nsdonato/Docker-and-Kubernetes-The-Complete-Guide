@@ -136,4 +136,173 @@
 
         Cuando instalas docker, se instala linux virtual machine, dentro de esta maquina virtual, que tiene su kernel y hostea los procesos y accesos a los recursos de tu maquina.
         
-         
+# Section 2: Manipulating Containers with the Docker Client
+<
+    15. Docker Run in Detail
+        docker run nombre_imagen
+            hace referencia al docker Cli
+                crea y corre la imagen
+                    nombre de la imagen
+
+    16. Overriding Default Commands
+        > docker run nombre_imagen (default command override, para que se ejecute apenas se corre.)
+
+        > docker run busybox echo hi there
+        hi here
+
+        > docker run busybox ls (imprime los archivos y carpetas dentro del container)
+        bin, dev, etc, home, proc, root, sys, tmp, usr, var 
+
+        a ls, lo corre como un proceso
+        los comandos extras son comandos que existen en la imagen creada, no se pueden correr en cualquier container si no sabes que están ahí
+
+    17. Listing Running Containers
+        docker ps // lista todos los containers corriendo, sirve para obtener datos del mismo, como el id.
+
+        > docker run busybox ping google.com (va a mostrar el container de busybox, solo así porque sino se ejecuta y se stopea.)
+        En una segunda terminal:
+        > docker ps 
+        
+        > docker ps --all // lista todos los containers que creamos alguna vez.
+        
+    18. Container Lifecycle
+         docker run = docker create + docker start
+
+        > docker create image_name (nombre de la imagen para usar por este container que creamos)
+        saskldj980423lkj23   // te retorna el container_id, ej si tarabamos hello-world
+        > docker start -a saskldj980423lkj23 // corre el container con ese id. (-a sirve para ver la info con la que arranca, sin -a, retorna el id como el create)
+
+    19. Restarting Stopped Containers
+        Una vez que creamos un container con un comando determinado, no lo podemos reemplazar.
+
+    20. Removing Stopped Containers
+        > docker system prune // stopea todos los containers, la cache de las imagenes, red
+
+        te sirve mas que nada para eliminar todo, si no pensas usar mas docker
+
+    21. Retrieving Log Outputs
+        
+        > docker logs container_id // obtengo los logs
+
+    22. Stopping Containers
+        > docker create busybox ping google.com
+        container_id
+        
+        > docker start container_id
+        container_id
+        
+        > docker logs container_id
+        muestra los pings...
+        
+        > docker ps
+        esta corriendo..
+
+        stop > SIGTERM -> termina el proceso de ping y hace unas limpiezas extras
+        stopkill > SIGKILL -> termina el proceso de ping, YA.-
+
+        > docker stop container_id // si no se stopea en 10s docker corre el comando kil
+
+        > docker kill container_id
+
+    23. Multi-Command Containers
+        
+        > redis-server (instaló redis sin docker)
+        muestra info de redis
+        > redis-cli // se conecta al server de redis local a la espera de un comando
+        >
+        > set mynumber 5
+        OK
+        > get mynumber
+        "5"
+
+        > docker run redis
+
+        redis esta corriendo en el container, por ende si tiras en otra venta redis-cli, va a decir que no puede hacer nada.
+
+    24. Executing Commands in Running Containers
+        ¿Como hacemos para ejecutar un segundo comando?
+
+        > docker exec -it container_id command
+        Referencia al Docker CLI
+            Corre otro comando
+                nos habilita a escribir input en el container
+                    id del contedor
+                        commando a ejecutar.
+        
+        > docker exec -it container_id redis-cli
+        > //entra al server
+        > set mynumber 5
+        OK
+        > get mynumber
+        "5"
+
+        * si removemos el -it, no podemos escribir sobre el comando, entonces nos devuelve la misma terminal
+
+        > docker exec container_id redis-cli
+        > // no entra, no permite comandos
+
+    25. The Purpose of the IT Flag
+        como estamos corriendo la virtual machine, los procesos tienen 3 canales atachados a ellos:
+        STDIN
+        STDOUT
+        STDERR
+
+        se usan para comunicar adentro del proceso (STDIN) o fuera (lo que viene del proceso) (STDOUT), STDERR, muestra los errores del proceso a traves de este canal.
+
+        -it son dos flags unidos, -i (cuando ejecutamos este nuevo comando en el contenedor, queremos atachar nuestra terminal a STDIN, para que el container pueda recibir lo que escribimos) y -t (es para que lo que escribimos se retorne desde el container, formateado "lindo")
+
+        por ejemplo, si tiramos docker exec -i container_id redis-cli, no nos retorna la terminal, onda > escribi algo, sino así:
+        > docker exec -i container_id redis-cli
+
+        y no te das cuenta que podes escribir, en cambio con -t
+        > docker exec -i container_id redis-cli
+        >
+
+        // al menos te muestra el > y te da la pauta que podes escribir y esta dentro del cli de redis.
+
+    26. Getting a Command Prompt in a Container
+
+        Para eso debemos, abrir 2 ventas, en una corres el container y en la otra haces docker exec -it container_id sh
+        > docker exec -it container_id sh
+        # cd ~/
+        # ls
+        # cd /
+        # ls 
+        bin data etc lib media opt root sbin sys user ETC..
+        # echo hi there
+        hi there
+        # exit // o ctrl+d para salir
+
+        sh es el nombre de un programa que esta en el container, nos habilita a entrar y ejecutar comandos en el container.
+
+        bash, powershell zsh sh -> command processors
+
+    27. Starting with a Shell
+        > docker run -it busybox sh // empeza una nueva imagen en un nuevo container y ejecuta el comando sh
+
+    28. Container Isolation
+        muestra en dos ventanas diferentes, containers diferentes pero de la misma imagen, crea un archivo en uno, y revisa en el otro, al ser instancias diferentes, no lo ve.
+
+# Section 3: Building Custom Images Through Docker Server
+
+    29. Creating Docker Images
+
+    30. Buildkit for Docker Desktop v2.4.0+ and Edge
+
+    31. Building a Dockerfile
+
+    32. Dockerfile Teardown
+
+    33. What's a Base Image?
+
+    34. The Build Process in Detail
+
+    35. A Brief Recap
+
+    36. Rebuilds with Cache
+
+    37. Tagging an Image
+
+    38. Quick Note for Windows Users
+
+    39. Manual Image Generation with Docker Commit
