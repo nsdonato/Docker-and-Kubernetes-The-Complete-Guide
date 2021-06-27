@@ -405,10 +405,59 @@
 
     35. A Brief Recap
         ...
+
     36. Rebuilds with Cache
         
+        agregamos info al dockerfile, volvemos a correr docker build .
+
+        en el output del build, vemos que usa la imagen en cache y no vuelve a bajar lo que ya bajó
+
+        si cambiamos el orden de los RUN, va a rebuildear todo e instalarlo en orden. esto también puede afectar en cuanto a tiempo de instalacion de todo.
+
     37. Tagging an Image
+        
+        esto sirve para no tener que andar usando el id para darle run, es como un alias.
+
+        mi docker id / redis : latest
+            repo/proyect name
+                version
+
+        -t es tag para la imagen.
+
+        > docker build -t midockerid/redis:latest .
+
+        después tenes que hacer
+        > docker run midockerid/redis 
+            por default es latest, por eso no se pone.
 
     38. Quick Note for Windows Users
+        In the upcoming lecture, we will be running a command to create a new image using docker commit with this command:
+
+        docker commit -c 'CMD ["redis-server"]' CONTAINERID
+
+        If you are a Windows user you may get an error like "/bin/sh: [redis-server]: not found" or "No Such Container"
+
+        Instead, try running the command like this:
+
+        docker commit -c "CMD 'redis-server'" CONTAINERID
 
     39. Manual Image Generation with Docker Commit
+        vamos a crear un nuevo container e instalar redis y setear un comando default.
+
+        docker run -it alpine sh 
+        # apk add --update redis
+        se instala en el file system, abrimos otra terminal, para tomar un snapshot de ese contenedor corriendo
+        > docker ps // para obtener el id
+        container_id
+        > docker commit -c 'CMD ["redis-server"]' container_id
+
+        -c 
+            es el comando default
+
+        > docker run nuevo_container_id
+
+        
+#  Section 19: Extras
+
+    333. Bonus!
+        los otros cursos que tiene.
