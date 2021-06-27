@@ -60,6 +60,8 @@
     5. Docker for Mac/Windows
         Vamos a instalar Docker para Windows:
 
+        https://hub.docker.com/editions/community/docker-ce-desktop-windows
+
         Docker Cliente (CLI), herramientas que vamos a usar para tirar comandos y nos ayuda a interactuar con Docker Server "Docker Daemon")
 
         Docker Server/Daemon:
@@ -278,29 +280,133 @@
         bash, powershell zsh sh -> command processors
 
     27. Starting with a Shell
+    
         > docker run -it busybox sh // empeza una nueva imagen en un nuevo container y ejecuta el comando sh
 
     28. Container Isolation
-        muestra en dos ventanas diferentes, containers diferentes pero de la misma imagen, crea un archivo en uno, y revisa en el otro, al ser instancias diferentes, no lo ve.
+
+        muestra en dos terminales diferentes, containers diferentes pero de la misma imagen, crea un archivo en uno, y revisa en el otro, al ser instancias diferentes, no lo ve.
 
 # Section 3: Building Custom Images Through Docker Server
 
-    29. Creating Docker Images
+    29. Creating Docker Images 23:10
+        
+        Vamos a crear nuestras propias imagenes con un docker file.
+
+        es un archivo de texto plano que va a tener un par de lineas de configuración, como se va a comportar cuando arranque, que programas va a tener, etc..
+
+        este archivo se pasa al docker cli > que se lo pasa al docker server > agarra al docker file, y buildea una imagen que podes usar después.
+
+        crear un docker file.
+            especificar la imagen base
+            correr algunos comandos para instalar programas adicionales
+            especificar un comando para correr cuando arranque nuestro container.
 
     30. Buildkit for Docker Desktop v2.4.0+ and Edge
+        2-22-2021
+
+        Most students who have the most recent versions of Docker will now have "Buildkit" enabled by default. If so, you will notice a slightly different output in your terminal when building from a Dockerfile.
+
+        The main difference for students will be the final step in the build process. As shown in the lecture the last step would say:
+
+        ---> fc60771eaa08
+        Successfully Built fc60771eaa08
+        
+        Now, with Buildkit, the final step would say:
+
+        => => exporting layers                                                      
+        0.0s => => writing image sha256:ee59c34ada9890ca09145cc88ccb25d32b677fc3b61e921  0.0s
+        
+        Both fc60771eaa08 and ee59c34ada9890ca09145cc88ccb25d32b677fc3b61e921 are the resulting image ID's that you would use to run a container.
+
+        eg:
+
+        docker run fc60771eaa08
+        or
+
+        docker run ee59c34ada9890ca09145cc88ccb25d32b677fc3b61e921
+
+
+        Disabling Buildkit to match course output
+
+        If you wish to disable the Buildkit feature so that you can more accurately follow along with the course, do the following:
+
+        Click the Docker Icon your systray
+
+        Select "Preferences"
+
+        Select "Docker Engine"
+
+        Change buildkit from true to false
+
+        {
+        "features": {
+            "buildkit": false
+        },
+        "experimental": false
+        }
+        Apply and Restart.
+
+        Buildkit Features and Documentation
+
+        If you want to learn more about features Buildkit has to offer, please check out the following pages:
+
+        https://docs.docker.com/develop/develop-images/build_enhancements/
+
+        https://docs.docker.com/engine/reference/commandline/build/#specifying-external-cache-sources
+
+        https://www.docker.com/blog/advanced-dockerfiles-faster-builds-and-smaller-images-using-buildkit-and-multistage-builds/
 
     31. Building a Dockerfile
+        
+        Vamos a crear una imagen que va a correr redis-server
+
+        mkdir redis-image
+        cd redis-image 
+        code .
+
+        Creamos el archivo Dockerfile, y fuimos poniendo comentarios (ver archivo)
+        Una vez que terminamos para buildear la imagen usamos
+        > docker build . // con el punto final.
 
     32. Dockerfile Teardown
+        1) la instrucción que le va a decir a Docker Server qué hacer.
+        2) argumentos para la instrucción.
+
+        FOM alpine
+        RUN apk add --update redis
+        CMD ["redis-server"]
 
     33. What's a Base Image?
+        Escribir un dockerfile == a decirle a tu computadora sin sistema operativo que instale Chrome.
 
+        o sea, para instalarlo, deberías, instalar un SO, usar el explorador default, bajarte chrome y ejecutarlo.
+
+        nosotros arrancamos con la imagen instalando alpine, agregando redis y después corriendolo.
+
+        el usa alpine porque tiene preinstalado un grupo de programas que son utiles.
+        
     34. The Build Process in Detail
+        
+        docker build .
+        agarra el docker file y genera la imagen
+        . es el grupo de archivos y carpetas que encapsulamos en el container.
+
+        explica lo que pasa detras de escena cuando hacemos 
+        docker build .
+
+        FROM alpine 
+            se descarga la imagen de alpine
+        RUN apk add --update redis
+            mira el paso anterior y crea un container con alpine y genera un proceso de apk para instalar la app
+            después lo stopea y genera una imagen temporal con ese snaptshot, de con alpine con la app borra el container 
+        CMD ["redis-server"]
+            Mira el paso anterior, crea la imagen y le dice que si en algun momento va a correr como contenedor, el comando va a ser ese.
 
     35. A Brief Recap
-
+        ...
     36. Rebuilds with Cache
-
+        
     37. Tagging an Image
 
     38. Quick Note for Windows Users
