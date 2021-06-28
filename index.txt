@@ -1,4 +1,3 @@
-
 # Section 1: Dive Into Docker!
     
     1. Finished Code and Diagrams
@@ -542,12 +541,91 @@
         
     47. Container Port Mapping
 
+        Incoming request: El contenedor, tiene puertos especificos para recibir red del exterior.
+        Outcoming request: solo se puede cambiar cuando el container esta corriendo
+
+        Docker run with por mapping
+            > docker run -p 8080:8080 image_id
+                        incoming:outcoming (inside de container)
+                    
+        docker run -p 4000:8080 8f0fdfeed074823070f27cf9e9171c7415f929e7e52ec1b308989fb898afc612
+
+        y funciona perfecto :) se impre hi there.
+
+        el puerto from, puede ser cualquiera, 3000, 5000, pero el puerto del container es alguno de los especificos. y entrarias localhost:5000 y docker lo mapea contra su 8080 y da la respuesta
+
+        IMPORTANTE: Verificar que el puerto en el que seteamos node, no se este utilizando. y que debe coincidir con el puerto del container
+
+        buildee la imagen como nsdonato/simpleweb , para correrla mas facil:
+        docker run -p 5000:8080 nsdonato/simpleweb
 
     48. Specifying a Working Directory
 
+        para mirar los archivos, sin iniciar el container:
+            docker run -it nsdonato/simpleweb sh
+
+        IMPORNTANTE: Los archivos al ser copiados quedan en el root directory, NO ES BUENA PRACTICA, lo que se recomienda es ponerlo en un directorio especifico
+
+        se agrega al dockerfile:
+        WORKDIR /usr/app
+            cualquier comando va a ser ejecutado a ese path relativo en el Container
+            o sea, el copy no es necesario cambiarlo, va a copiar y pegar todo en el working directory.
+            si el directorio no se encuentra, lo crea /usr/app 
+
     49. Unnecessary Rebuilds
+        
+        Cuando hacemos una imagen tomamos un snapshot de los archivos que tenemos en determinado momento, si quieramos actualizar por ej el index, tenemos que rebuildear la imagen, el tema es que va a tardar mas (por como lo tenemos ahora, ya que docker detecta que debe reinstalar los package.)
+
+        1) stopear el container.
+
+        > docker build -t nsdonato/simpleweb
+        verificamos que reinstala los package
+
+        IMPORTANTE: cuando hacemos un cambio en un archivo, aunque no tenga que ver con un package, docker detecta que tiene que volver a installar los package otra vez, en el proximo cap explica como hacer para que no pase esto.
 
     50. Minimizing Cache Busting and Rebuilds
+
+        Mira en el directorio en el que estas, copia el package.json al directo correspondiente
+
+
+        # Specify a base image
+        FROM node:alpine
+
+        WORKDIR /usr/app
+
+        # Install some depenendencies
+        COPY ./package.json ./
+        RUN npm install
+        COPY ./ ./
+
+        # Default command
+        CMD ["npm", "start"]
+
+        Lo que pasa acá es que antes copiabamos todo junto, y Docker entendía que había un cambio en un archivo y por eso volvía a hacer todos los pasos de nuevo, por eso separamos el copy, entonces docker va a reinstalar los package si y solo si, hay un cambio en el package.json, esto optimiza el rebuild mediante la caché de docker.
+
+# Section 5: Docker Compose with Multiple Local Containers
+
+    51. App Overview
+
+    52. App Server Starter Code
+
+    53. Assembling a Dockerfile
+
+    54. Introducing Docker Compose
+
+    55. Docker Compose Files
+
+    56. Networking with Docker Compose
+
+    57. Docker Compose Commands
+
+    58. Stopping Docker Compose Containers
+
+    59. Container Maintenance with Compose
+
+    60. Automatic Container Restarts
+
+    61. Container Status with Docker Compose
 
 #  Section 19: Extras
 
